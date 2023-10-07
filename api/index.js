@@ -12,6 +12,7 @@ const corsOptions = { origin: true };
 const app = express();
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+app.use(bodyParser.raw({ type: 'application/octet-stream', limit: '10mb' }));
 app.use(cors(corsOptions));
 
 transporter = nodemailer.createTransport({
@@ -26,8 +27,8 @@ transporter = nodemailer.createTransport({
 
 app.post('/api/sendresults', async (req, res) => {
   try {
-    const fileData = Buffer.from(req.body?.file);
-    const email = req.body?.email;
+    const fileData = req.body;
+    const email = req.get('Email');
     await transporter.sendMail({
       from: process.env.SMTP_EMAIL,
       to: email,
