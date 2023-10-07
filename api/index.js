@@ -26,8 +26,8 @@ transporter = nodemailer.createTransport({
 
 app.post('/api/sendresults', async (req, res) => {
   try {
-    const fileData = Buffer.from(req.body.file);
-    const email = req.body.email;
+    const fileData = Buffer.from(req.body?.file);
+    const email = req.body?.email;
     await transporter.sendMail({
       from: process.env.SMTP_EMAIL,
       to: email,
