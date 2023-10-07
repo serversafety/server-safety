@@ -12,7 +12,6 @@ const corsOptions = { origin: true };
 const app = express();
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
-app.use(bodyParser.raw({ type: 'application/octet-stream', limit: '10mb' }));
 app.use(cors(corsOptions));
 
 transporter = nodemailer.createTransport({
@@ -27,14 +26,16 @@ transporter = nodemailer.createTransport({
 
 app.post('/api/sendresults', async (req, res) => {
   try {
+    const fileData = req.body.file;
+    const email = req.body.email;
     await transporter.sendMail({
       from: process.env.SMTP_EMAIL,
-      to: 'sergykt1992@mail.ru',
+      to: email,
       subject: `Норма выдачи по ЕТН`,
       text: '',
       attachments: {
         filename: 'Норма выдачи по ЕТН.pdf',
-        content: req.body,
+        content: fileData,
       }
     });
     console.log('Результаты отправлены');
